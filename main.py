@@ -283,8 +283,9 @@ moveForm.onsubmit = async function(event) {
 """)
 
 with open("requirements.txt", "w", encoding="utf-8") as f:
-    f.write("""fastapi
-uvicorn
+    f.write("""
+fastapi
+uvicorn[standard]
 jinja2
 python-multipart
 """)
