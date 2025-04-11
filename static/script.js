@@ -2,7 +2,8 @@ const gameBoard = document.getElementById('game-board');
 const moveForm = document.getElementById('move-form');
 const playerSelect = document.getElementById('player-select');
 
-const ws = new WebSocket(`ws://${location.host}/ws`);
+const wsProtocol = location.protocol === 'https:' ? 'wss' : 'ws';
+const ws = new WebSocket(`${wsProtocol}://${location.host}/ws`);
 
 ws.onopen = function() {
     console.log('WebSocket connection established');
