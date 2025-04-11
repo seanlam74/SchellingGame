@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Schelling Game</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    <h1>Schelling Game</h1>
+
+    <div style="max-width: 600px; margin: auto; text-align: left; font-size: 14px; padding: 10px; background: #f9f9f9; border: 1px solid #ddd;">
+        <p><strong>Game Instructions:</strong></p>
+        <p>Each of you is non-racist. But you do want some people of your type to be around you, for ease of communication, common festivals, and so on.</p>
+        <p>You have a threshold of how many people of your type should be neighbours (i.e., people in houses with an edge common with you):</p>
+        <ul>
+            <li><strong>Scenario 1:</strong> For middle plot residents, you want <strong>2 out of 8</strong> neighbours to be of your type.</li>
+            <li><strong>Scenario 2:</strong> For middle plot residents, you want <strong>3 out of 8</strong> neighbours to be of your type.</li>
+            <li><strong>Scenario 3:</strong> For middle plot residents, you want <strong>4 out of 8</strong> neighbours to be of your type.</li>
+            <li>For side plots, it is <strong>2 out of 5</strong>.</li>
+            <li>For corner plots, it is <strong>1 out of 3</strong>.</li>
+        </ul>
+        <p>If the threshold is not met, you are not happy and you move to an empty location where it is met. If there is more than one feasible location to move to, you follow the following order of preference:</p>
+        <ol>
+            <li>Corner location</li>
+            <li>Side location</li>
+            <li>Middle location</li>
+        </ol>
+        <p>If there is more than one choice within a preference, feel free to use your discretion.</p>
+        <p><strong>Note:</strong> Cells with a <strong>red border</strong> represent <strong>unhappy players</strong> who currently do not have enough neighbours of their own type according to the rules above. These players should move to improve their happiness!</p>
+    </div>
+
+    <div>
+        <label for="scenario-select">Select Scenario:</label>
+        <select id="scenario-select" onchange="changeScenario()">
+            <option value="2">Scenario 1 (2 out of 8)</option>
+            <option value="3">Scenario 2 (3 out of 8)</option>
+            <option value="4">Scenario 3 (4 out of 8)</option>
+        </select>
+    </div>
+
+    <div id="game-board"></div>
+
+    <form id="move-form">
+        <label>Player:
+            <select name="player" id="player-select">
+                {% for player, info in players.items() %}
+                    <option value="{{ player }}">{{ player }} ({{ info['tribe'] }})</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Target X: <input type="number" name="target_x" min="0" max="4" required></label>
+        <label>Target Y: <input type="number" name="target_y" min="0" max="4" required></label>
+        <button type="submit">Move</button>
+    </form>
+
+    <button onclick="resetGame()">Reset Game</button>
+
+    <script src="/static/script.js"></script>
+    <script>
+        function resetGame() {
+            fetch('/reset', { method: 'POST' }).then(() => {
+                location.reload();
+            });
+        }
+
+        function changeScenario() {
+            const selectedScenario = document.getElementById('scenario-select').value;
+            fetch(`/scenario/${selectedScenario}`, { method: 'POST' }).then(() => {
+                location.reload();
+            });
+        }
+    </script>
+</body>
+</html>
