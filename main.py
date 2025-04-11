@@ -131,8 +131,7 @@ async def change_scenario(threshold: int):
     return {"status": "scenario changed", "threshold": middle_threshold}
 
 
-
-# Prepare static and templates
+####### Prepare static and templates
 import os
 os.makedirs("static", exist_ok=True)
 os.makedirs("templates", exist_ok=True)
