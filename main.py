@@ -141,6 +141,7 @@ with open("templates/index.html", "w", encoding="utf-8") as f:
 <html>
 <head>
     <title>Schelling Game</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel=\"stylesheet\" type=\"text/css\" href=\"/static/style.css\">
 </head>
 <body>
