@@ -34,6 +34,7 @@ for player, cell in zip(players.keys(), cells[:len(players)]):
 
 # Keep track of WebSocket connections
 connections = []
+middle_threshold = 3  # Default scenario is Scenario 2
 
 # Utility functions
 def get_neighbors(x, y):
@@ -77,18 +78,11 @@ def get_unhappy_players():
     return [player for player in players if not is_happy(player)]
 
 # Routes
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "players": players})
-
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     connections.append(websocket)
-
-    # Send initial game state immediately after connection
     await websocket.send_json({"grid": grid, "players": players, "unhappy": get_unhappy_players()})
-
     try:
         while True:
             await websocket.receive_text()
@@ -126,6 +120,9 @@ async def reset_game():
     await broadcast_state()
     return {"status": "reset"}
 
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request, "players": players})
 @app.post("/scenario/{threshold}")
 async def change_scenario(threshold: int):
     global middle_threshold
@@ -133,8 +130,7 @@ async def change_scenario(threshold: int):
     await broadcast_state()
     return {"status": "scenario changed", "threshold": middle_threshold}
 
-# Modify the is_happy function to use dynamic middle_threshold
-middle_threshold = 3  # Default scenario is Scenario 2
+
 
 # Prepare static and templates
 import os
