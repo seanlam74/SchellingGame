@@ -6,7 +6,8 @@ const wsProtocol = location.protocol === 'https:' ? 'wss' : 'ws';
 const ws = new WebSocket(`${wsProtocol}://${location.host}/ws`);
 
 ws.onopen = function() {
-    console.log('WebSocket connection established');
+    console.log('WebSocket connection established');          
+
 };
 
 ws.onmessage = function(event) {

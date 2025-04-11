@@ -89,6 +89,10 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         connections.remove(websocket)
 
+@app.head("/", include_in_schema=False)
+async def home_head():
+    return HTMLResponse(headers={"X-FastAPI": "OK"})    
+
 @app.post("/move")
 async def move_player(player: str = Form(...), target_x: int = Form(...), target_y: int = Form(...)):
     old_x, old_y = player_positions[player]
@@ -123,6 +127,7 @@ async def reset_game():
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "players": players})
+
 @app.post("/scenario/{threshold}")
 async def change_scenario(threshold: int):
     global middle_threshold
@@ -217,10 +222,12 @@ with open("static/script.js", "w", encoding="utf-8") as f:
 const moveForm = document.getElementById('move-form');
 const playerSelect = document.getElementById('player-select');
 
-const ws = new WebSocket(`ws://${location.host}/ws`);
+const wsProtocol = location.protocol === 'https:' ? 'wss' : 'ws';
+const ws = new WebSocket(`${wsProtocol}://${location.host}/ws`);
 
 ws.onopen = function() {
-    console.log('WebSocket connection established');
+    console.log('WebSocket connection established');          
+
 };
 
 ws.onmessage = function(event) {
